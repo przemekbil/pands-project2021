@@ -4,6 +4,7 @@
 import pandas as pd 
 import os
 import matplotlib.pyplot as plt
+import seaborn as sbr
 
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(THIS_FOLDER, '../Data/')
@@ -21,9 +22,15 @@ df.columns = af
 mean_values = df.groupby('class').mean()
 print(mean_values)
 
-# plot a boxplot for each class for all 4 atributes:
-df.groupby('class').boxplot(rot=45, fontsize=8, figsize=(8,10))
+
+sbr.set_style("whitegrid")
+sbr.pairplot(df, hue="class", size=3)\
+    .add_legend()
 plt.show()
+
+# plot a boxplot for each class for all 4 atributes:
+# df.groupby('class').boxplot(rot=45, fontsize=8, figsize=(8,10))
+# plt.show()
 
 
 #print(df)
