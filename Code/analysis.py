@@ -7,29 +7,35 @@ import matplotlib.pyplot as plt
 import seaborn as sbr
 from fishermodule import *
 
-THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-DATA_PATH = os.path.join(THIS_FOLDER, '../Data/')
+def preparedata():
 
-atribute_file = os.path.join(DATA_PATH, 'atribute.names')
-data_file = os.path.join(DATA_PATH, 'iris.data')
+    THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+    DATA_PATH = os.path.join(THIS_FOLDER, '../Data/')
 
-# squeeze=True - If the parsed data only contains one column then return a Series (https://pandas.pydata.org/docs/reference/api/pandas.read_csv.html)
-af = pd.read_csv(atribute_file, header=None, squeeze=True, dtype=str)
-df = pd.read_csv(data_file, header=None)
+    atribute_file = os.path.join(DATA_PATH, 'atribute.names')
+    data_file = os.path.join(DATA_PATH, 'iris.data')
 
-# As a header row use a Series read from the atribute_file:
-df.columns = af
+    # squeeze=True - If the parsed data only contains one column then return a Series (https://pandas.pydata.org/docs/reference/api/pandas.read_csv.html)
+    af = pd.read_csv(atribute_file, header=None, squeeze=True, dtype=str)
+    df = pd.read_csv(data_file, header=None)
+
+    # As a header row use a Series read from the atribute_file:
+    df.columns = af
+
+    return df
+
+iris = preparedata()
 
 # Calculate mean values for each class
-mean_values = df.groupby('class').mean()
+mean_values = iris.groupby('class').mean()
 print(mean_values)
 
-fisheranalysys(df)
+fisheranalysys(iris)
 
 '''
 # Exploratory data analysis as per https://www.youtube.com/watch?v=FLuqwQgSBDw part 1, 2 and 3
 sbr.set_style("whitegrid")
-sbr.pairplot(df, hue="class", height=3)\
+sbr.pairplot(iris, hue="class", height=3)\
     .add_legend()
 plt.show()
 '''
