@@ -44,4 +44,4 @@ def fisheranalysys(df, outpath):
     os.chdir(outpath)
     # save the histogram for the compound Fisher variable
     plt.savefig('fisherFig1.png', dpi=150)
-
+    plt.close()

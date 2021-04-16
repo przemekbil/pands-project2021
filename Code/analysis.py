@@ -25,22 +25,32 @@ def getdata(datapath):
 
 def outsummary(subset, outpath):
     # get a name of the atribute from the name of the second column
-    att = subset.columns[1]
+    atribute = subset.columns[1]
     # calculate the mean of this attribute for every class
     stats = subset.groupby('class').mean()
     # calculate the standard deviation of this attribute for every class
     stats['Std dev'] = subset.groupby('class').std()
     # change the name of the attribute column to Mean
-    stats = stats.rename(columns={att: 'Mean'})
+    stats = stats.rename(columns={atribute: 'Mean'})
 
-    # Output calculated descriptive stats to separate files
     # Change current folder to /Out folder
     os.chdir(outpath)
-    with open(att+".txt", "wt") as outfile:
-        outfile.write("Summary for {}\n".format(att))
+
+    # Output calculated descriptive stats to separate files
+    with open(atribute+".txt", "wt") as outfile:
+        outfile.write("Summary for {}\n".format(atribute))
         # Output as perhttps://stackoverflow.com/questions/31247198/python-pandas-write-content-of-dataframe-into-text-file
         # and https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_string.html
         stats.to_string(outfile)
+    
+    # output histogram for each class
+    bin = (subset[atribute].max()-subset[atribute].min())/20
+
+    hist = sbr.histplot(subset, x=atribute, hue="class", binwidth=bin)
+    hist.figure.savefig(atribute+".png")
+    # Added as per https://stackoverflow.com/questions/57533954/how-to-close-seaborn-plots
+    # Without plt.close(), each next histogram was printed with the data from the previous ones
+    plt.close()
 
 
 # initialize folder locations
