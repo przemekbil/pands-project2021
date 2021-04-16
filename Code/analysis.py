@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import seaborn as sbr
 from fishermodule import *
 
-def preparedata():
+def getdata():
 
     THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
     DATA_PATH = os.path.join(THIS_FOLDER, '../Data/')
@@ -22,14 +22,33 @@ def preparedata():
     # As a header row use a Series read from the atribute_file:
     df.columns = af
 
+    # Return data frame with added header
     return df
 
-iris = preparedata()
 
-# Calculate mean values for each class
-mean_values = iris.groupby('class').mean()
-print(mean_values)
+def outsummary(subset):
+    # get a name of the atribute from the name of the second column
+    att = subset.columns[1]
+    # calculate the mean of this attribute for every class
+    stats = subset.groupby('class').mean()
+    # calculate the standard deviation of this attribute for every class
+    stats['Std dev'] = subset.groupby('class').std()
+    # change the name of the attribute column to Mean
+    stats = stats.rename(columns={att: 'Mean'})
+    # print the stats on the screen (change this to output to the file)
+    print("\n Summary for {}".format(att))
+    print(stats)
 
+# Read the data from iris.data and add the columns names from atribute.names
+iris = getdata()
+
+# iterate through the columns of the iris dataset
+for column in iris.columns:
+    # if the name of the column is not class, call the outsummary function and pass the subset of the data with only 2 column: class and 1 attribute
+    if column!='class':
+        outsummary(iris[['class', column]])
+
+# call the function that recreates calculations from the classic Fisher paper
 fisheranalysys(iris)
 
 '''
