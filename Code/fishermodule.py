@@ -8,7 +8,7 @@ import seaborn as sbr
 import pandas as pd 
 import os
 
-def fisheranalysys(df):
+def fisheranalysys(df, outpath):
 
     # https://stackoverflow.com/questions/33768122/python-pandas-dataframe-how-to-multiply-entire-column-with-a-scalar
     fm = df.copy()
@@ -39,5 +39,9 @@ def fisheranalysys(df):
     # Create the histograms for the compound measurement, same as Fig1 on p188
     #https://seaborn.pydata.org/generated/seaborn.histplot.html
     sbr.histplot(compund, x="sum", hue="class", binwidth=2)
+
+    # change current folder to Out folder:
+    os.chdir(outpath)
+    # save the histogram for the compound Fisher variable
     plt.savefig('fisherFig1.png', dpi=150)
 
