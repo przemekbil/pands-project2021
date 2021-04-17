@@ -33,15 +33,20 @@ def fisheranalysys(df, outpath):
 
     tableix = tableix.rename(columns={"sum": "Mean"})
 
-    print("\n\tMean values and standard deviation of the compound measurement per species as per Table IX\n")
-    print(tableix)
+    # change current folder to Out folder:
+    os.chdir(outpath)
+
+    with open("Fisher_tableIX.txt", "wt") as outfile:
+        outfile.write("\tMean values and standard deviation of the compound measurement per species as per Table IX\n")
+        # Output as perhttps://stackoverflow.com/questions/31247198/python-pandas-write-content-of-dataframe-into-text-file
+        # and https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_string.html
+        tableix.to_string(outfile)
 
     # Create the histograms for the compound measurement, same as Fig1 on p188
     #https://seaborn.pydata.org/generated/seaborn.histplot.html
     sbr.histplot(compund, x="sum", hue="class", binwidth=2)
 
-    # change current folder to Out folder:
-    os.chdir(outpath)
+
     # save the histogram for the compound Fisher variable
     plt.savefig('fisherFig1.png', dpi=150)
     plt.close()

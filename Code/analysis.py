@@ -4,11 +4,14 @@
 import pandas as pd
 import math
 import os
+import sys
 import matplotlib.pyplot as plt
 import seaborn as sbr
 from fishermodule import *
 
 def getdata(datapath):
+
+    verbose("Reading file: ")
 
     atribute_file = os.path.join(datapath, 'atribute.names')
     data_file = os.path.join(datapath, 'iris.data')
@@ -20,6 +23,8 @@ def getdata(datapath):
     # As a header row use a Series read from the atribute_file:
     df.columns = af
 
+    verbose()
+
     # Return data frame with added header
     return df
 
@@ -27,8 +32,11 @@ def getdata(datapath):
 # The output is a text file with descriptive stats and the histogram
 # File name for the histogram and the text file are taken from the second column name
 def outsummary(subset, outpath):
+
     # get a name of the atribute from the name of the second column
     atribute = subset.columns[1]
+
+    verbose("Output summary data for "+atribute+":")
 
     # calculate the mean of this attribute for every class
     stats = subset.groupby('class').mean()
@@ -49,6 +57,8 @@ def outsummary(subset, outpath):
         # and https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_string.html
         stats.to_string(outfile)
     
+    verbose()
+
     # The following part will output histogram, different coulous for each class
 
     # First, calculate the width of the bins
@@ -56,8 +66,9 @@ def outsummary(subset, outpath):
     #nrofbins = math.ceil(math.sqrt(subset.count()/3))
     #binw = (subset[atribute].max()-subset[atribute].min())/nrofbins
 
+    verbose("Output histogram for "+atribute+":")
     # Create histogram using seaborn library
-    sbr.histplot(subset, x=atribute, hue="class")
+    sbr.histplot(subset, x=atribute, hue="class", kde=True)
 
     # output the histogram to png file named after the attribute name
     plt.savefig(atribute+" histogram.png", dpi=150)
@@ -65,7 +76,9 @@ def outsummary(subset, outpath):
     # Added as per https://stackoverflow.com/questions/57533954/how-to-close-seaborn-plots
     # Without plt.close(), each next histogram was printed with the data from the previous ones
     plt.close()
+    verbose()
 
+    verbose("Output boxplot for "+atribute+":")
     # because histograms for different classes are overlapping, it's better to use boxplot to show the data distribution
     #https://seaborn.pydata.org/generated/seaborn.boxplot.html
     sbr.boxplot(data=subset, y=atribute, x="class")
@@ -74,15 +87,27 @@ def outsummary(subset, outpath):
     plt.savefig(atribute+" boxplot.png", dpi=150)
     plt.close()
 
+    verbose()
+
+def verbose(msg=" Done"):
+# function simplified version of the progress bar from: https://stackoverflow.com/questions/3160699/python-progress-bar
+    sys.stdout.write(msg)
+    sys.stdout.flush()
+    if msg==" Done":
+        sys.stdout.write("\n")
+
+
 # initialize folder locations
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 datafolder = os.path.join(THIS_FOLDER, '../Data/')
 outfolder = os.path.join(THIS_FOLDER, '../Out/')
 
+
 # Read the data from iris.data and add the columns names from atribute.names
 iris = getdata(datafolder)
 
 # iterate through the columns of the iris dataset
+# to create histograms, boxplots and descriptive statistics summary for each variable 
 for column in iris.columns:
     # if the name of the column is not class, call the outsummary function and pass the subset of the data with only 2 column: class and 1 attribute
     if column!='class':
@@ -90,16 +115,17 @@ for column in iris.columns:
         outsummary(iris[['class', column]], outfolder)
 
 
+verbose("Output scatter plot:")
+# Create 6 scatter plots for 4 independent variables
 # Exploratory data analysis as per https://www.youtube.com/watch?v=FLuqwQgSBDw part 1, 2 and 3
 sbr.set_style("whitegrid")
 scatt = sbr.pairplot(iris, hue="class", height=3).add_legend()
 plt.savefig('scatter plot.png', dpi=150)
 plt.close()
 
+verbose()
 
+verbose("Replicate Fisher results:")
 # call the function that recreates calculations from the classic Fisher paper
 fisheranalysys(iris, outfolder)
-
-
-
-#print(df)
+verbose()

@@ -1,0 +1,6 @@
+	Mean values and standard deviation of the compound measurement per species as per Table IX
+0                     Mean   Std Dev
+class                               
+Iris-setosa     -10.750419  2.443633
+Iris-versicolor  22.938879  4.222176
+Iris-virginica   38.248269  4.341893
