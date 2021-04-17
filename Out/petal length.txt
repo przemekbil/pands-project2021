@@ -1,6 +1,0 @@
-Summary for petal length
-0                 Mean   Std dev
-class                           
-Iris-setosa      1.462  0.173664
-Iris-versicolor  4.260  0.469911
-Iris-virginica   5.552  0.551895
