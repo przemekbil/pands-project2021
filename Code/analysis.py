@@ -45,8 +45,16 @@ def outsummary(subset, outpath):
     # calculate the standard deviation of this attribute for every class
     stats['Std dev'] = subset.groupby('class').std()
 
+    # calculate min and max values per class
+    stats['min'] = subset.groupby('class').min()
+    stats['max'] = subset.groupby('class').max()
+
     # change the name of the attribute column to Mean
     stats = stats.rename(columns={atribute: 'Mean'})
+
+    # calculate mean +/- 3*std, where we expect to find 99.7% of obeservations (only if data is distributed normally)
+    stats['Mean - 3std'] = stats['Mean'] - stats['Std dev'] * 3
+    stats['Mean + 3std'] = stats['Mean'] + stats['Std dev'] * 3
 
     # Change current folder to /Out folder (as per https://docs.python.org/3/library/os.html#os-file-dir)
     os.chdir(outpath)
@@ -90,6 +98,16 @@ def outsummary(subset, outpath):
     # output the BOXPLOT to png file named after the attribute name
     plt.savefig(atribute+" boxplot.png", dpi=150)
     plt.close()
+
+    verbose()
+    
+    verbose("Output violin plot for "+atribute+":")
+    # violin plot displays similar information as boxplot and hostogram together
+    # https://seaborn.pydata.org/generated/seaborn.violinplot.html
+    sbr.violinplot(data=subset, y=atribute, x="class")
+    plt.savefig(atribute+" violin plot.png", dpi=150)
+    plt.close()
+    
 
     verbose()
 
