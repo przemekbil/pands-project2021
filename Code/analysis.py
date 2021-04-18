@@ -36,11 +36,9 @@ def outsummary(subset, outpath):
     # get a name of the atribute from the name of the second column
     atribute = subset.columns[1]
 
-<<<<<<< HEAD
+
     verbose("Output summary data for "+atribute+":")
 
-=======
->>>>>>> b2963cc7ddb6f1a546faf059f1295d8004f9fb38
     # calculate the mean of this attribute for every class
     stats = subset.groupby('class').mean()
 
@@ -60,11 +58,9 @@ def outsummary(subset, outpath):
         # and https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_string.html
         stats.to_string(outfile)
     
-<<<<<<< HEAD
     verbose()
 
-=======
->>>>>>> b2963cc7ddb6f1a546faf059f1295d8004f9fb38
+
     # The following part will output histogram, different coulous for each class
 
     # First, calculate the width of the bins
@@ -72,14 +68,9 @@ def outsummary(subset, outpath):
     #nrofbins = math.ceil(math.sqrt(subset.count()/3))
     #binw = (subset[atribute].max()-subset[atribute].min())/nrofbins
 
-<<<<<<< HEAD
     verbose("Output histogram for "+atribute+":")
     # Create histogram using seaborn library
     sbr.histplot(subset, x=atribute, hue="class", kde=True)
-=======
-    # Create histogram using seaborn library
-    sbr.histplot(subset, x=atribute, hue="class")
->>>>>>> b2963cc7ddb6f1a546faf059f1295d8004f9fb38
 
     # output the histogram to png file named after the attribute name
     plt.savefig(atribute+" histogram.png", dpi=150)
@@ -100,20 +91,24 @@ def outsummary(subset, outpath):
 
     verbose()
 
-def verbose(msg=" Done"):
-# function simplified version of the progress bar from: https://stackoverflow.com/questions/3160699/python-progress-bar
-    sys.stdout.write(msg)
-    sys.stdout.flush()
-    if msg==" Done":
-        sys.stdout.write("\n")
+def isverbose():
+    if len(sys.argv)==2 and (sys.argv[1]=="-v" or sys.argv[1]=="-V" ):
+        # if one arguments was specified in the command line, try to use it as a text file name: 
+        return True
+    else:
+        return False
 
-    # because histograms for different classes are overlapping, it's better to use boxplot to show the data distribution
-    #https://seaborn.pydata.org/generated/seaborn.boxplot.html
-    sbr.boxplot(data=subset, y=atribute, x="class")
 
-    # output the BOXPLOT to png file named after the attribute name
-    plt.savefig(atribute+" boxplot.png", dpi=150)
-    plt.close()
+if isverbose():
+    def verbose(msg=" Done"):
+    # function simplified version of the progress bar from: https://stackoverflow.com/questions/3160699/python-progress-bar
+        sys.stdout.write(msg)
+        sys.stdout.flush()
+        if msg==" Done":
+            sys.stdout.write("\n")
+else:
+    verbose = lambda *a: None
+
 
 # initialize folder locations
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
@@ -133,24 +128,13 @@ for column in iris.columns:
         outsummary(iris[['class', column]], outfolder)
 
 
-<<<<<<< HEAD
 verbose("Output scatter plot:")
 # Create 6 scatter plots for 4 independent variables
-=======
->>>>>>> b2963cc7ddb6f1a546faf059f1295d8004f9fb38
 # Exploratory data analysis as per https://www.youtube.com/watch?v=FLuqwQgSBDw part 1, 2 and 3
 sbr.set_style("whitegrid")
 scatt = sbr.pairplot(iris, hue="class", height=3).add_legend()
 plt.savefig('scatter plot.png', dpi=150)
 plt.close()
-<<<<<<< HEAD
-=======
-
-
-# call the function that recreates calculations from the classic Fisher paper
-fisheranalysys(iris, outfolder)
-
->>>>>>> b2963cc7ddb6f1a546faf059f1295d8004f9fb38
 
 verbose()
 
