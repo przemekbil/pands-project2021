@@ -1,6 +1,0 @@
-Summary for sepal length
-0                 Mean   Std dev
-class                           
-Iris-setosa      5.006  0.352490
-Iris-versicolor  5.936  0.516171
-Iris-virginica   6.588  0.635880

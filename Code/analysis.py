@@ -51,13 +51,15 @@ def outsummary(subset, outpath):
     # Change current folder to /Out folder (as per https://docs.python.org/3/library/os.html#os-file-dir)
     os.chdir(outpath)
 
-    # Output calculated descriptive stats to file name after the attribute name
-    with open(atribute+".txt", "wt") as outfile:
+    # Append calculated descriptive stats to a single file
+    with open("Summary.txt", "at") as outfile:
         outfile.write("Summary for {}\n".format(atribute))
         # Output as perhttps://stackoverflow.com/questions/31247198/python-pandas-write-content-of-dataframe-into-text-file
         # and https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_string.html
         stats.to_string(outfile)
-    
+        # add empty line after the table
+        outfile.write("\n\n")
+
     verbose()
 
 
@@ -98,7 +100,7 @@ def isverbose():
     else:
         return False
 
-
+# The idea for defining this function this way, taken from: https://stackoverflow.com/questions/5980042/how-to-implement-the-verbose-or-v-option-into-a-script
 if isverbose():
     def verbose(msg=" Done"):
     # function simplified version of the progress bar from: https://stackoverflow.com/questions/3160699/python-progress-bar
@@ -118,6 +120,11 @@ outfolder = os.path.join(THIS_FOLDER, '../Out/')
 
 # Read the data from iris.data and add the columns names from atribute.names
 iris = getdata(datafolder)
+
+# Open Summary.txt in write mode to clear any previous info while adding the header
+with open(os.path.join(outfolder, "Summary.txt") , "w") as outfile:
+    outfile.write("Descriptive statistics for each variable in the Iris dataset\n\n")
+
 
 # iterate through the columns of the iris dataset
 # to create histograms, boxplots and descriptive statistics summary for each variable 
