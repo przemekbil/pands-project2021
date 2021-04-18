@@ -153,9 +153,30 @@ for column in iris.columns:
         outsummary(iris[['class', column]], outfolder)
 
 
+
+# Exploratory analysis as per: https://www.youtube.com/watch?v=-o3AxdVcUtQ
+verbose("Descriptive statistics: ")
+with open(os.path.join(outfolder, "Summary.txt") , "a") as outfile:
+    iris.groupby("class").describe().to_string(outfile)
+
+verbose()
+
+classes = iris['class'].unique()
+
+for classtype in classes:
+    verbose("{} correlation matrix: ".format(classtype))
+    correlation = iris[iris['class']==classtype].corr()
+    with open(os.path.join(outfolder, "Summary.txt") , "a") as outfile:
+        outfile.write("\n\nCorrelation matrix for {}\n\n".format(classtype))
+        correlation.to_string(outfile)    
+    sbr.heatmap(correlation, xticklabels=correlation.columns, yticklabels=correlation.columns, annot=True)
+    plt.savefig(classtype +' Correlation heat map.png', dpi=150)
+    plt.close()
+    verbose()
+
 verbose("Output scatter plot:")
 # Create 6 scatter plots for 4 independent variables
-# Exploratory data analysis as per https://www.youtube.com/watch?v=FLuqwQgSBDw part 1, 2 and 3
+# Exploratory data analysis as per https://www.youtube.com/watch?v=FLuqwQgSBDw 
 sbr.set_style("whitegrid")
 scatt = sbr.pairplot(iris, hue="class", height=3).add_legend()
 plt.savefig('scatter plot.png', dpi=150)
