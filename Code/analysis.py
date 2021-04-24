@@ -168,17 +168,26 @@ with open(os.path.join(outfolder, "Summary.txt") , "a") as outfile:
 
 verbose()
 
+# create a new table with classes
 classes = iris['class'].unique()
 
+# step through the class types
 for classtype in classes:
     verbose("{} correlation matrix: ".format(classtype))
+    # create a correlation table for one iris class
     correlation = iris[iris['class']==classtype].corr()
+    # append correlation table to "Summary.txt"
     with open(os.path.join(outfolder, "Summary.txt") , "a") as outfile:
         outfile.write("\n\nCorrelation matrix for {}\n\n".format(classtype))
-        correlation.to_string(outfile)    
-    sbr.heatmap(correlation, xticklabels=correlation.columns, yticklabels=correlation.columns, annot=True)
+        correlation.to_string(outfile)
+    # add title to heatmap correlation graphs as per https://stackoverflow.com/questions/32723798/how-do-i-add-a-title-to-seaborn-heatmap
+    ax=plt.axes()
+    # sbr.heatmap(correlation, xticklabels=correlation.columns, yticklabels=correlation.columns, annot=True)
+    sbr.heatmap(correlation, xticklabels=False, yticklabels=False, annot=True)
+    ax.set_title(classtype)
     plt.savefig(classtype +' Correlation heat map.png', dpi=150)
     plt.close()
+    # print "Done"
     verbose()
 
 verbose("Output scatter plot:")

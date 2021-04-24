@@ -44,7 +44,7 @@ def fisheranalysys(df, outpath):
 
     # Create the histograms for the compound measurement, same as Fig1 on p188
     #https://seaborn.pydata.org/generated/seaborn.histplot.html
-    sbr.histplot(compund, x="sum", hue="class", binwidth=2)
+    sbr.histplot(compund, x="sum", hue="class", binwidth=2, kde=True)
 
 
     # save the histogram for the compound Fisher variable
