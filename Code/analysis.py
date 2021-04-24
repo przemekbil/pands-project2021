@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import seaborn as sbr
 from fishermodule import *
 
+# this function will read data from the data files and will return pandas data frame df
 def getdata(datapath):
 
     verbose("Reading file: ")
@@ -79,7 +80,7 @@ def outsummary(subset, outpath):
     #binw = (subset[atribute].max()-subset[atribute].min())/nrofbins
 
     verbose("Output histogram for "+atribute+":")
-    # Create histogram using seaborn library
+    # Create histogram using seaborn library, add probability density function (kde=True)
     sbr.histplot(subset, x=atribute, hue="class", kde=True)
 
     # output the histogram to png file named after the attribute name
@@ -111,26 +112,32 @@ def outsummary(subset, outpath):
 
     verbose()
 
+# this function will check if this script was called with -v or -V argument, then it will return true. False for all the rest arg values or no arguments
 def isverbose():
     if len(sys.argv)==2 and (sys.argv[1]=="-v" or sys.argv[1]=="-V" ):
-        # if one arguments was specified in the command line, try to use it as a text file name: 
+        # if one arguments was specified in the command line, check if it's v or V for verbose. Ignore all the rest. 
         return True
     else:
         return False
 
 # The idea for defining this function this way, taken from: https://stackoverflow.com/questions/5980042/how-to-implement-the-verbose-or-v-option-into-a-script
+# if verbose() returns true, function for displaying messages will be defined, if it's false, lambda function will be defined (do nothing function)
 if isverbose():
     def verbose(msg=" Done"):
-    # function simplified version of the progress bar from: https://stackoverflow.com/questions/3160699/python-progress-bar
+    # default message is "Done", if function is called without argument, "Done will be printed"
+    # this is simplified version of the progress bar from: https://stackoverflow.com/questions/3160699/python-progress-bar
+    # sys.stdout.write used instead of print to make sure "Done" is printed in the same line as the message text
         sys.stdout.write(msg)
         sys.stdout.flush()
+        # go to new line after "Done" message
         if msg==" Done":
             sys.stdout.write("\n")
 else:
+    # define verbose as lambda function: do nothing
     verbose = lambda *a: None
 
 
-# initialize folder locations
+# initialize folder locations:
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 datafolder = os.path.join(THIS_FOLDER, '../Data/')
 outfolder = os.path.join(THIS_FOLDER, '../Out/')
