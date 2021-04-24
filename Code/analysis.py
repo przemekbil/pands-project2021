@@ -8,6 +8,7 @@ import sys
 import matplotlib.pyplot as plt
 import seaborn as sbr
 from fishermodule import *
+from scipy.stats import normaltest
 
 # this function will read data from the data files and will return pandas data frame df
 def getdata(datapath):
@@ -56,6 +57,17 @@ def outsummary(subset, outpath):
     # calculate mean +/- 3*std, where we expect to find 99.7% of obeservations (only if data is distributed normally)
     stats['Mean - 3std'] = stats['Mean'] - stats['Std dev'] * 3
     stats['Mean + 3std'] = stats['Mean'] + stats['Std dev'] * 3
+
+    # normality test as per:https://machinelearningmastery.com/a-gentle-introduction-to-normality-tests-in-python/
+    # and https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.normaltest.html
+    for classtype in subset['class'].unique():
+        class_subset = subset[subset['class'] == classtype]
+        
+        # Calculate normality test for each class separately
+        stat, p = normaltest(class_subset[atribute])
+        # access single cell in the data frame: https://kanoki.org/2019/04/12/pandas-how-to-get-a-cell-value-and-update-it/
+        stats.at[classtype,'Statistics'] = stat
+        stats.at[classtype,'pValue'] = p
 
     # Change current folder to /Out folder (as per https://docs.python.org/3/library/os.html#os-file-dir)
     os.chdir(outpath)
@@ -164,6 +176,9 @@ for column in iris.columns:
 # Exploratory analysis as per: https://www.youtube.com/watch?v=-o3AxdVcUtQ
 verbose("Descriptive statistics: ")
 with open(os.path.join(outfolder, "Summary.txt") , "a") as outfile:
+    outfile.write("\n\nSimple descriptive statistics for the whole data set\n\n")
+    iris.describe().to_string(outfile)
+    outfile.write("\n\nSimple descriptive statistics groupped by Class\n\n")
     iris.groupby("class").describe().to_string(outfile)
 
 verbose()
@@ -182,8 +197,7 @@ for classtype in classes:
         correlation.to_string(outfile)
     # add title to heatmap correlation graphs as per https://stackoverflow.com/questions/32723798/how-do-i-add-a-title-to-seaborn-heatmap
     ax=plt.axes()
-    # sbr.heatmap(correlation, xticklabels=correlation.columns, yticklabels=correlation.columns, annot=True)
-    sbr.heatmap(correlation, xticklabels=False, yticklabels=False, annot=True)
+    sbr.heatmap(correlation, xticklabels=correlation.columns, yticklabels=correlation.columns, annot=True)
     ax.set_title(classtype)
     plt.savefig(classtype +' Correlation heat map.png', dpi=150)
     plt.close()
