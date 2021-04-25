@@ -74,7 +74,7 @@ def outsummary(subset, outpath):
 
     # Append calculated descriptive stats to a single file
     with open("Summary.txt", "at") as outfile:
-        outfile.write("Summary for {}\n".format(atribute))
+        outfile.write("Table {}: Summary for {}\n".format(counter.getTab(), atribute))
         # Output as perhttps://stackoverflow.com/questions/31247198/python-pandas-write-content-of-dataframe-into-text-file
         # and https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_string.html
         stats.to_string(outfile)
@@ -148,6 +148,21 @@ else:
     # define verbose as lambda function: do nothing
     verbose = lambda *a: None
 
+# Defining class Counter, to keep track of the Table and Figures numbering
+# I will create only one instance of this Class. Each time getTab or getFig method is called,
+# it will return the counter incresed by 1
+class Counter:
+    tab = 0
+    fig = 0
+
+    def getTab(self):
+        self.tab+=1
+        return self.tab
+    
+    def getFig(self):
+        self.fig+=1
+        return self.fig
+
 
 # initialize folder locations:
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
@@ -158,8 +173,21 @@ outfolder = os.path.join(THIS_FOLDER, '../Out/')
 # Read the data from iris.data and add the columns names from atribute.names
 iris = getdata(datafolder)
 
-# Open Summary.txt in write mode to clear any previous info while adding the header
+# initialize instance of Counter
+counter = Counter()
+
+# Exploratory analysis as per: https://www.youtube.com/watch?v=-o3AxdVcUtQ
+verbose("Descriptive statistics: ")
 with open(os.path.join(outfolder, "Summary.txt") , "w") as outfile:
+    outfile.write("\nTable {}: Simple descriptive statistics for the whole data set \n\n".format(counter.getTab()))
+    iris.describe().to_string(outfile)
+    outfile.write("\n\nTable {}: Simple descriptive statistics groupped by Class\n\n".format(counter.getTab()))
+    iris.groupby("class").describe().to_string(outfile)
+
+verbose()
+
+# Open Summary.txt in write mode to clear any previous info while adding the header
+with open(os.path.join(outfolder, "Summary.txt") , "a") as outfile:
     outfile.write("Descriptive statistics for each variable in the Iris dataset\n\n")
 
 
@@ -172,17 +200,6 @@ for column in iris.columns:
         outsummary(iris[['class', column]], outfolder)
 
 
-
-# Exploratory analysis as per: https://www.youtube.com/watch?v=-o3AxdVcUtQ
-verbose("Descriptive statistics: ")
-with open(os.path.join(outfolder, "Summary.txt") , "a") as outfile:
-    outfile.write("\n\nSimple descriptive statistics for the whole data set\n\n")
-    iris.describe().to_string(outfile)
-    outfile.write("\n\nSimple descriptive statistics groupped by Class\n\n")
-    iris.groupby("class").describe().to_string(outfile)
-
-verbose()
-
 # create a new table with classes
 classes = iris['class'].unique()
 
@@ -193,7 +210,7 @@ for classtype in classes:
     correlation = iris[iris['class']==classtype].corr()
     # append correlation table to "Summary.txt"
     with open(os.path.join(outfolder, "Summary.txt") , "a") as outfile:
-        outfile.write("\n\nCorrelation matrix for {}\n\n".format(classtype))
+        outfile.write("\n\nTable {}: Correlation matrix for {}\n\n".format(counter.getTab(), classtype))
         correlation.to_string(outfile)
     # add title to heatmap correlation graphs as per https://stackoverflow.com/questions/32723798/how-do-i-add-a-title-to-seaborn-heatmap
     ax=plt.axes()
