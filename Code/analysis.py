@@ -42,21 +42,12 @@ def outsummary(subset, outpath):
     verbose("Output summary data for "+atribute+":")
 
     # calculate the mean of this attribute for every class
-    stats = subset.groupby('class').mean()
-
-    # calculate the standard deviation of this attribute for every class
-    stats['Std dev'] = subset.groupby('class').std()
-
-    # calculate min and max values per class
-    stats['min'] = subset.groupby('class').min()
-    stats['max'] = subset.groupby('class').max()
-
-    # change the name of the attribute column to Mean
-    stats = stats.rename(columns={atribute: 'Mean'})
+    stats = subset.groupby('class').describe()
 
     # calculate mean +/- 3*std, where we expect to find 99.7% of obeservations (only if data is distributed normally)
-    stats['Mean - 3std'] = stats['Mean'] - stats['Std dev'] * 3
-    stats['Mean + 3std'] = stats['Mean'] + stats['Std dev'] * 3
+   
+    stats['Mean - 3std'] = subset.groupby('class').mean() - subset.groupby('class').std() * 3
+    stats['Mean + 3std'] = subset.groupby('class').mean() + subset.groupby('class').std() * 3
 
     # normality test as per:https://machinelearningmastery.com/a-gentle-introduction-to-normality-tests-in-python/
     # and https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.normaltest.html
@@ -68,13 +59,14 @@ def outsummary(subset, outpath):
         # access single cell in the data frame: https://kanoki.org/2019/04/12/pandas-how-to-get-a-cell-value-and-update-it/
         stats.at[classtype,'Statistics'] = stat
         stats.at[classtype,'pValue'] = p
+    
 
     # Change current folder to /Out folder (as per https://docs.python.org/3/library/os.html#os-file-dir)
     os.chdir(outpath)
 
-    # Append calculated descriptive stats to a single file
+    # Append calculated descriptive stats to a Summary.txt file
     with open("Summary.txt", "at") as outfile:
-        printtable("Table {}: Summary for {}".format(counter.getTab(), atribute), stats, outfile)
+        printtable("Table {}: Descriptive statistics groupped by Class for {}".format(counter.getTab(), atribute), stats, outfile)
 
     verbose()
 
@@ -157,6 +149,7 @@ def printtable(title, table, tofile):
 # Defining class Counter, to keep track of the Table and Figures numbering
 # I will create only one instance of this Class. Each time getTab or getFig method is called,
 # it will return the counter incresed by 1 therefore providing way to automatically keep track of Tables and Figures numbers
+# This tutorial helped me define methods correctly: https://realpython.com/python3-object-oriented-programming/#instance-methods
 class Counter:
     tab = 0
     fig = 0
@@ -190,7 +183,7 @@ with open(os.path.join(outfolder, "Summary.txt") , "w") as outfile:
     printtable("Table {}: Simple descriptive statistics for the whole data set".format(counter.getTab()), iris.describe(), outfile)
 
     # Output descriptive stats for the whole data set groupped by class
-    printtable("Table {}: Simple descriptive statistics groupped by Class".format(counter.getTab()), iris.groupby("class").describe(), outfile)
+    printtable("Table {}: Simple descriptive statistics for the whole data set groupped by Class".format(counter.getTab()), iris.groupby("class").describe(), outfile)
 
 verbose()
 
@@ -218,7 +211,7 @@ for classtype in classes:
     correlation = iris[iris['class']==classtype].corr()
     # append correlation table to "Summary.txt"
     with open(os.path.join(outfolder, "Summary.txt") , "a") as outfile:
-        printtable("Table {}: Correlation matrix for {}".format(counter.getTab(), classtype), correlation, outfile)
+        printtable("Table {}: Attributes correlation matrix for the class {}".format(counter.getTab(), classtype), correlation, outfile)
 
     # add title to heatmap correlation graphs as per https://stackoverflow.com/questions/32723798/how-do-i-add-a-title-to-seaborn-heatmap
     ax=plt.axes()
