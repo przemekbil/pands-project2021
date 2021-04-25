@@ -74,12 +74,7 @@ def outsummary(subset, outpath):
 
     # Append calculated descriptive stats to a single file
     with open("Summary.txt", "at") as outfile:
-        outfile.write("Table {}: Summary for {}\n".format(counter.getTab(), atribute))
-        # Output as perhttps://stackoverflow.com/questions/31247198/python-pandas-write-content-of-dataframe-into-text-file
-        # and https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_string.html
-        stats.to_string(outfile)
-        # add empty line after the table
-        outfile.write("\n\n")
+        printtable("Table {}: Summary for {}".format(counter.getTab(), atribute), stats, outfile)
 
     verbose()
 
@@ -148,9 +143,20 @@ else:
     # define verbose as lambda function: do nothing
     verbose = lambda *a: None
 
+# Defining printtable function, to format output of each table the same way
+def printtable(title, table, tofile):
+    tofile.write("----------------------------------------------------------------------------------------------------------------")
+    tofile.write("\n{}\n".format(title))
+    tofile.write("================================================================================================================\n")
+    # Output as per https://stackoverflow.com/questions/31247198/python-pandas-write-content-of-dataframe-into-text-file
+    # and https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_string.html
+    table.to_string(tofile)
+    tofile.write("\n----------------------------------------------------------------------------------------------------------------\n\n\n")
+
+
 # Defining class Counter, to keep track of the Table and Figures numbering
 # I will create only one instance of this Class. Each time getTab or getFig method is called,
-# it will return the counter incresed by 1
+# it will return the counter incresed by 1 therefore providing way to automatically keep track of Tables and Figures numbers
 class Counter:
     tab = 0
     fig = 0
@@ -179,16 +185,18 @@ counter = Counter()
 # Exploratory analysis as per: https://www.youtube.com/watch?v=-o3AxdVcUtQ
 verbose("Descriptive statistics: ")
 with open(os.path.join(outfolder, "Summary.txt") , "w") as outfile:
-    outfile.write("\nTable {}: Simple descriptive statistics for the whole data set \n\n".format(counter.getTab()))
-    iris.describe().to_string(outfile)
-    outfile.write("\n\nTable {}: Simple descriptive statistics groupped by Class\n\n".format(counter.getTab()))
-    iris.groupby("class").describe().to_string(outfile)
+    
+    # Output descriptive stats for the whole data set
+    printtable("Table {}: Simple descriptive statistics for the whole data set".format(counter.getTab()), iris.describe(), outfile)
+
+    # Output descriptive stats for the whole data set groupped by class
+    printtable("Table {}: Simple descriptive statistics groupped by Class".format(counter.getTab()), iris.groupby("class").describe(), outfile)
 
 verbose()
 
 # Open Summary.txt in write mode to clear any previous info while adding the header
-with open(os.path.join(outfolder, "Summary.txt") , "a") as outfile:
-    outfile.write("Descriptive statistics for each variable in the Iris dataset\n\n")
+#with open(os.path.join(outfolder, "Summary.txt") , "a") as outfile:
+    #outfile.write("Descriptive statistics for each variable in the Iris dataset\n\n")
 
 
 # iterate through the columns of the iris dataset
@@ -210,8 +218,8 @@ for classtype in classes:
     correlation = iris[iris['class']==classtype].corr()
     # append correlation table to "Summary.txt"
     with open(os.path.join(outfolder, "Summary.txt") , "a") as outfile:
-        outfile.write("\n\nTable {}: Correlation matrix for {}\n\n".format(counter.getTab(), classtype))
-        correlation.to_string(outfile)
+        printtable("Table {}: Correlation matrix for {}".format(counter.getTab(), classtype), correlation, outfile)
+
     # add title to heatmap correlation graphs as per https://stackoverflow.com/questions/32723798/how-do-i-add-a-title-to-seaborn-heatmap
     ax=plt.axes()
     sbr.heatmap(correlation, xticklabels=correlation.columns, yticklabels=correlation.columns, annot=True)
