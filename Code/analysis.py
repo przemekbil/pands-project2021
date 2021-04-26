@@ -83,7 +83,7 @@ def outsummary(subset, outpath):
     sbr.histplot(subset, x=atribute, hue="class", kde=True)
 
     # output the histogram to png file named after the attribute name
-    plt.savefig(atribute+" histogram.png", dpi=150)
+    plt.savefig(counter.getFig(atribute + " histogram.png"), dpi=150)
 
     # Added as per https://stackoverflow.com/questions/57533954/how-to-close-seaborn-plots
     # Without plt.close(), each next histogram was printed with the data from the previous ones
@@ -96,7 +96,7 @@ def outsummary(subset, outpath):
     sbr.boxplot(data=subset, y=atribute, x="class")
 
     # output the BOXPLOT to png file named after the attribute name
-    plt.savefig(atribute+" boxplot.png", dpi=150)
+    plt.savefig(counter.getFig(atribute + " boxplot.png"), dpi=150)
     plt.close()
 
     verbose()
@@ -105,7 +105,7 @@ def outsummary(subset, outpath):
     # violin plot displays similar information as boxplot and hostogram together
     # https://seaborn.pydata.org/generated/seaborn.violinplot.html
     sbr.violinplot(data=subset, y=atribute, x="class")
-    plt.savefig(atribute+" violin plot.png", dpi=150)
+    plt.savefig(counter.getFig(atribute + " violin plot.png") , dpi=150)
     plt.close()
     
 
@@ -146,21 +146,26 @@ def printtable(title, table, tofile):
     tofile.write("\n----------------------------------------------------------------------------------------------------------------\n\n\n")
 
 
-# Defining class Counter, to keep track of the Table and Figures numbering
+# Defining class Counter, to keep track of the Tables and Figures numbering
 # I will create only one instance of this Class. Each time getTab or getFig method is called,
-# it will return the counter incresed by 1 therefore providing way to automatically keep track of Tables and Figures numbers
-# This tutorial helped me define methods correctly: https://realpython.com/python3-object-oriented-programming/#instance-methods
+# it will return the counter incresed by 1, therefore providing a way to automatically keep track of Tables and Figures numbering
+# This tutorial helped me define the methods correctly: https://realpython.com/python3-object-oriented-programming/#instance-methods
 class Counter:
     tab = 0
     fig = 0
 
     def getTab(self):
         self.tab+=1
+        # This function will return Table number only
         return self.tab
     
-    def getFig(self):
+    def getFig(self, in_str):
         self.fig+=1
-        return self.fig
+        out_str = 'Figure ' + str(self.fig) + ' - ' + in_str
+        # This function will return the full file name
+        # There is a bit of inconsistency between these two get functions, but I decided to leave them this way
+        # And focus on writing the filnal report instead
+        return  out_str
 
 
 # initialize folder locations:
@@ -172,7 +177,7 @@ outfolder = os.path.join(THIS_FOLDER, '../Out/')
 # Read the data from iris.data and add the columns names from atribute.names
 iris = getdata(datafolder)
 
-# initialize instance of Counter
+# initialize instance of a Counter class
 counter = Counter()
 
 # Exploratory analysis as per: https://www.youtube.com/watch?v=-o3AxdVcUtQ
@@ -209,6 +214,7 @@ for classtype in classes:
     verbose("{} correlation matrix: ".format(classtype))
     # create a correlation table for one iris class
     correlation = iris[iris['class']==classtype].corr()
+
     # append correlation table to "Summary.txt"
     with open(os.path.join(outfolder, "Summary.txt") , "a") as outfile:
         printtable("Table {}: Attributes correlation matrix for the class {}".format(counter.getTab(), classtype), correlation, outfile)
@@ -217,7 +223,7 @@ for classtype in classes:
     ax=plt.axes()
     sbr.heatmap(correlation, xticklabels=correlation.columns, yticklabels=correlation.columns, annot=True)
     ax.set_title(classtype)
-    plt.savefig(classtype +' Correlation heat map.png', dpi=150)
+    plt.savefig(counter.getFig(classtype + ' Correlation heat map.png'), dpi=150)
     plt.close()
     # print "Done"
     verbose()
@@ -227,7 +233,7 @@ verbose("Output scatter plot:")
 # Exploratory data analysis as per https://www.youtube.com/watch?v=FLuqwQgSBDw 
 sbr.set_style("whitegrid")
 scatt = sbr.pairplot(iris, hue="class", height=3).add_legend()
-plt.savefig('scatter plot.png', dpi=150)
+plt.savefig(counter.getFig('scatter plot.png'), dpi=150)
 plt.close()
 
 verbose()
