@@ -14,7 +14,7 @@ from scipy.stats import normaltest
 # this function will read data from the data files and will return pandas data frame df
 def getdata(datapath):
 
-    verbose("Reading file: ")
+    verbose.out("Reading file: ")
 
     atribute_file = os.path.join(datapath, 'atribute.names')
     data_file = os.path.join(datapath, 'iris.data')
@@ -26,7 +26,7 @@ def getdata(datapath):
     # As a header row use a Series read from the atribute_file:
     df.columns = af
 
-    verbose()
+    verbose.close()
 
     # Return data frame with added header
     return df
@@ -40,7 +40,7 @@ def outsummary(subset, outpath):
     atribute = subset.columns[1]
 
 
-    verbose("Output summary data for "+atribute+":")
+    verbose.out("Output summary data for "+atribute+":")
 
     # calculate the mean of this attribute for every class
     stats = subset.groupby('class').describe()
@@ -69,7 +69,7 @@ def outsummary(subset, outpath):
     with open("Summary.txt", "at") as outfile:
         printtable("Table {}: Descriptive statistics groupped by Class for {}".format(counter.getTab(), atribute), stats, outfile)
 
-    verbose()
+    verbose.close()
 
 
     # The following part will output histogram, different coulous for each class
@@ -79,7 +79,7 @@ def outsummary(subset, outpath):
     #nrofbins = math.ceil(math.sqrt(subset.count()/3))
     #binw = (subset[atribute].max()-subset[atribute].min())/nrofbins
 
-    verbose("Output histogram for "+atribute+":")
+    verbose.out("Output histogram for "+atribute+":")
     # Create histogram using seaborn library, add probability density function (kde=True)
     sbr.histplot(subset, x=atribute, hue="class", kde=True)
 
@@ -89,9 +89,9 @@ def outsummary(subset, outpath):
     # Added as per https://stackoverflow.com/questions/57533954/how-to-close-seaborn-plots
     # Without plt.close(), each next histogram was printed with the data from the previous ones
     plt.close()
-    verbose()
+    verbose.close()
 
-    verbose("Output boxplot for "+atribute+":")
+    verbose.out("Output boxplot for "+atribute+":")
     # because histograms for different classes are overlapping, it's better to use boxplot to show the data distribution
     #https://seaborn.pydata.org/generated/seaborn.boxplot.html
     sbr.boxplot(data=subset, y=atribute, x="class")
@@ -100,17 +100,16 @@ def outsummary(subset, outpath):
     plt.savefig(counter.getFig(atribute + " boxplot.png"), dpi=150)
     plt.close()
 
-    verbose()
+    verbose.close()
     
-    verbose("Output violin plot for "+atribute+":")
+    verbose.out("Output violin plot for "+atribute+":")
     # violin plot displays similar information as boxplot and hostogram together
     # https://seaborn.pydata.org/generated/seaborn.violinplot.html
     sbr.violinplot(data=subset, y=atribute, x="class")
     plt.savefig(counter.getFig(atribute + " violin plot.png") , dpi=150)
     plt.close()
     
-
-    verbose()
+    verbose.close()
 
 # this function will check if this script was called with -v or -V argument, then it will return true. False for all the rest arg values or no arguments
 def isverbose():
@@ -120,36 +119,22 @@ def isverbose():
     else:
         return False
 
-# The idea for defining this function this way, taken from: https://stackoverflow.com/questions/5980042/how-to-implement-the-verbose-or-v-option-into-a-script
-# if verbose() returns true, function for displaying messages will be defined, if it's false, lambda function will be defined (do nothing function)
-if isverbose():
-    def verbose(msg=" Done"):
-    # default message is "Done", if function is called without argument, "Done will be printed"
-    # this is simplified version of the progress bar from: https://stackoverflow.com/questions/3160699/python-progress-bar
-    # sys.stdout.write used instead of print to make sure "Done" is printed in the same line as the message text
-        sys.stdout.write(msg)
-        sys.stdout.flush()
-        # go to new line after "Done" message
-        if msg==" Done":
-            sys.stdout.write("\n")
-else:
-    # define verbose as lambda function: do nothing
-    verbose = lambda *a: None
-
 # initialize folder locations:
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 datafolder = os.path.join(THIS_FOLDER, '../Data/')
 outfolder = os.path.join(THIS_FOLDER, '../Out/')
 
 
+# initialize instance of a Counter class
+counter = Counter()
+# initialize instance of Verbose class
+verbose = Verbose(isverbose())
+
 # Read the data from iris.data and add the columns names from atribute.names
 iris = getdata(datafolder)
 
-# initialize instance of a Counter class
-counter = Counter()
-
 # Exploratory analysis as per: https://www.youtube.com/watch?v=-o3AxdVcUtQ
-verbose("Descriptive statistics: ")
+verbose.out("Descriptive statistics: ")
 with open(os.path.join(outfolder, "Summary.txt") , "w") as outfile:
     
     # Output descriptive stats for the whole data set
@@ -158,7 +143,7 @@ with open(os.path.join(outfolder, "Summary.txt") , "w") as outfile:
     # Output descriptive stats for the whole data set groupped by class
     printtable("Table {}: Simple descriptive statistics for the whole data set groupped by Class".format(counter.getTab()), iris.groupby("class").describe(), outfile)
 
-verbose()
+verbose.close()
 
 # Open Summary.txt in write mode to clear any previous info while adding the header
 #with open(os.path.join(outfolder, "Summary.txt") , "a") as outfile:
@@ -179,7 +164,7 @@ classes = iris['class'].unique()
 
 # step through the class types
 for classtype in classes:
-    verbose("{} correlation matrix: ".format(classtype))
+    verbose.out("{} correlation matrix: ".format(classtype))
     # create a correlation table for one iris class
     correlation = iris[iris['class']==classtype].corr()
 
@@ -194,9 +179,9 @@ for classtype in classes:
     plt.savefig(counter.getFig(classtype + ' Correlation heat map.png'), dpi=150)
     plt.close()
     # print "Done"
-    verbose()
+    verbose.close()
 
-verbose("Output scatter plot:")
+verbose.out("Output scatter plot:")
 # Create 6 scatter plots for 4 independent variables
 # Exploratory data analysis as per https://www.youtube.com/watch?v=FLuqwQgSBDw 
 sbr.set_style("whitegrid")
@@ -204,9 +189,9 @@ scatt = sbr.pairplot(iris, hue="class", height=3).add_legend()
 plt.savefig(counter.getFig('scatter plot.png'), dpi=150)
 plt.close()
 
-verbose()
+verbose.close()
 
-verbose("Replicate Fisher results:")
+verbose.out("Replicate Fisher results:")
 # call the function that recreates calculations from the classic Fisher paper
 fisheranalysys(iris, outfolder, "Summary.txt", counter)
-verbose()
+verbose.close()

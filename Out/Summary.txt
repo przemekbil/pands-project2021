@@ -110,7 +110,7 @@ petal width       0.281108     0.537728      0.322108     1.000000
 
 
 ----------------------------------------------------------------------------------------------------------------
-Table 10: Mean values and standard deviation of the compound measurement per species as per Table IX
+Table 10: Mean values and standard deviation of the compound measurement per species as per Table IX from Fisher paper
 ================================================================================================================
 0                     Mean   Std Dev
 class                               

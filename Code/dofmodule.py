@@ -1,5 +1,8 @@
 # Data Out Formatting Module - dofmodule.py
+# This module will have definitions of classes and functions that take care of data output formatting
 # Author: Przemyslaw Bil
+
+import sys
 
 # Defining class Counter, to keep track of the Tables and Figures numbering
 # I will create only one instance of this Class. Each time getTab or getFig method is called,
@@ -24,6 +27,42 @@ class Counter:
         # There is a bit of inconsistency between these two get functions, but I decided to leave them this way
         # And focus on writing the filnal report instead
         return  out_str
+
+class Verbose:
+    isverbose = False
+    msg = ""
+    msg_len = 0
+
+    def __init__(self, isver):
+        self.isverbose = isver
+
+    
+    def out(self, message):
+     # default message is "Done", if function is called without argument, "Done will be printed"
+    # this is simplified version of the progress bar from: https://stackoverflow.com/questions/3160699/python-progress-bar
+    # sys.stdout.write used instead of print to make sure "Done" is printed in the same line as the message text
+        if self.isverbose:
+            self.msg = message
+            sys.stdout.write(self.msg)
+            sys.stdout.flush()
+            
+
+    def close(self):
+        self.msg_len = len(self.msg)
+
+        if self.isverbose:
+            if self.msg_len > 31:
+                sys.stdout.write("\tDone\n")
+            elif self.msg_len > 23:
+                sys.stdout.write("\t\tDone\n")
+            elif self.msg_len > 15:
+                sys.stdout.write("\t\t\tDone\n")
+            else:
+                sys.stdout.write("\t\t\t\tDone\n")
+
+            sys.stdout.flush()
+
+
 
 # Defining printtable function, to format output of each table the same way
 def printtable(title, table, tofile):

@@ -38,7 +38,7 @@ def fisheranalysys(df, outpath, outfilename, counter):
     os.chdir(outpath)
 
     with open(outfilename, "at") as outfile:
-        printtable("Table {}: Mean values and standard deviation of the compound measurement per species as per Table IX".format(counter.getTab()), tableix, outfile)
+        printtable("Table {}: Mean values and standard deviation of the compound measurement per species as per Table IX from Fisher paper".format(counter.getTab()), tableix, outfile)
 
     # Create the histograms for the compound measurement, same as Fig1 on p188
     #https://seaborn.pydata.org/generated/seaborn.histplot.html
