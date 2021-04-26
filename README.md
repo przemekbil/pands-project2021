@@ -9,6 +9,7 @@ Code – this is the directory where all the Python codes is stored:
 
 	analysis.py – main program
 	fishermodule.py – this file contains the ‘fisheranalysys’ function that recreates results of Fisher’s paper. This function is called from the main program.
+    dofmodule - module with Counter class and printtable function, both used for data output formatting
 
 Data – this directory stores the Fisher’s Iris data set in 2 files downloaded from https://archive.ics.uci.edu/ml/datasets/iris:
 

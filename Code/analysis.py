@@ -8,7 +8,6 @@ import sys
 import matplotlib.pyplot as plt
 import seaborn as sbr
 from fishermodule import *
-from dofmodule import Counter
 from dofmodule import *
 from scipy.stats import normaltest
 
@@ -209,5 +208,5 @@ verbose()
 
 verbose("Replicate Fisher results:")
 # call the function that recreates calculations from the classic Fisher paper
-fisheranalysys(iris, outfolder)
+fisheranalysys(iris, outfolder, "Summary.txt", counter)
 verbose()

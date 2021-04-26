@@ -7,8 +7,9 @@ import matplotlib.pyplot as plt
 import seaborn as sbr
 import pandas as pd 
 import os
+from dofmodule import *
 
-def fisheranalysys(df, outpath):
+def fisheranalysys(df, outpath, outfilename, counter):
 
     # https://stackoverflow.com/questions/33768122/python-pandas-dataframe-how-to-multiply-entire-column-with-a-scalar
     fm = df.copy()
@@ -36,17 +37,13 @@ def fisheranalysys(df, outpath):
     # change current folder to Out folder:
     os.chdir(outpath)
 
-    with open("Fisher_tableIX.txt", "wt") as outfile:
-        outfile.write("\tMean values and standard deviation of the compound measurement per species as per Table IX\n")
-        # Output as perhttps://stackoverflow.com/questions/31247198/python-pandas-write-content-of-dataframe-into-text-file
-        # and https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_string.html
-        tableix.to_string(outfile)
+    with open(outfilename, "at") as outfile:
+        printtable("Table {}: Mean values and standard deviation of the compound measurement per species as per Table IX".format(counter.getTab()), tableix, outfile)
 
     # Create the histograms for the compound measurement, same as Fig1 on p188
     #https://seaborn.pydata.org/generated/seaborn.histplot.html
     sbr.histplot(compund, x="sum", hue="class", binwidth=2, kde=True)
 
-
     # save the histogram for the compound Fisher variable
-    plt.savefig('fisherFig1.png', dpi=150)
+    plt.savefig(counter.getFig('fisherFig1.png'), dpi=150)
     plt.close()
