@@ -14,7 +14,7 @@ max        7.900000     4.400000      6.900000     2.500000
 
 
 ----------------------------------------------------------------------------------------------------------------
-Table 2: Simple descriptive statistics for the whole data set groupped by Class
+Table 2: Simple descriptive statistics for the whole data set grouped by Class
 ================================================================================================================
 0               sepal length                                             sepal width                                               petal length                                              petal width                                          
                        count   mean       std  min    25%  50%  75%  max       count   mean       std  min    25%  50%    75%  max        count   mean       std  min  25%   50%    75%  max       count   mean       std  min  25%  50%  75%  max

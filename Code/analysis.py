@@ -60,10 +60,7 @@ def outsummary(subset, outpath):
         # access single cell in the data frame: https://kanoki.org/2019/04/12/pandas-how-to-get-a-cell-value-and-update-it/
         stats.at[classtype,'Statistics'] = stat
         stats.at[classtype,'pValue'] = p
-    
 
-    # Change current folder to /Out folder (as per https://docs.python.org/3/library/os.html#os-file-dir)
-    os.chdir(outpath)
 
     # Append calculated descriptive stats to a Summary.txt file
     with open("Summary.txt", "at") as outfile:
@@ -133,6 +130,9 @@ verbose = Verbose(isverbose())
 # Read the data from iris.data and add the columns names from atribute.names
 iris = getdata(datafolder)
 
+# Change current folder to /Out folder (as per https://docs.python.org/3/library/os.html#os-file-dir)
+os.chdir(outfolder)
+
 # Exploratory analysis as per: https://www.youtube.com/watch?v=-o3AxdVcUtQ
 verbose.out("Descriptive statistics: ")
 with open(os.path.join(outfolder, "Summary.txt") , "w") as outfile:
@@ -141,7 +141,17 @@ with open(os.path.join(outfolder, "Summary.txt") , "w") as outfile:
     printtable("Table {}: Simple descriptive statistics for the whole data set".format(counter.getTab()), iris.describe(), outfile)
 
     # Output descriptive stats for the whole data set groupped by class
-    printtable("Table {}: Simple descriptive statistics for the whole data set groupped by Class".format(counter.getTab()), iris.groupby("class").describe(), outfile)
+    printtable("Table {}: Simple descriptive statistics for the whole data set grouped by Class".format(counter.getTab()), iris.groupby("class").describe(), outfile)
+
+verbose.close()
+
+verbose.out("Output boxplot for the whole data set:")
+#https://seaborn.pydata.org/generated/seaborn.boxplot.html
+sbr.boxplot(data=iris, orient="v")
+
+# output the BOXPLOT to png file named after the attribute name
+plt.savefig(counter.getFig("The whole data set boxplot.png"), dpi=150)
+plt.close()
 
 verbose.close()
 
