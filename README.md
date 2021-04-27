@@ -28,16 +28,29 @@ To run the code, run the “analysis.py” file. The script can be run with “-
 
 
 References:
+
 https://stackoverflow.com
+
 https://pandas.pydata.org
+
 https://seaborn.pydata.org
+
 https://realpython.com
+
 https://machinelearningmastery.com
+
 https://docs.scipy.org
+
 https://kanoki.org
+
 https://docs.python.org
+
 https://www.qimacros.com
+
 https://www.youtube.com/watch?v=-o3AxdVcUtQ
+
 https://www.youtube.com/watch?v=FLuqwQgSBDw 
+
 https://archive.ics.uci.edu/ml/datasets/iris
+
 https://onlinelibrary.wiley.com/doi/epdf/10.1111/j.1469-1809.1936.tb02137.x
