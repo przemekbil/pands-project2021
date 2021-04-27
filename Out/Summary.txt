@@ -26,7 +26,19 @@ Iris-virginica          50.0  6.588  0.635880  4.9  6.225  6.5  6.9  7.9        
 
 
 ----------------------------------------------------------------------------------------------------------------
-Table 3: Descriptive statistics groupped by Class for sepal length
+Table 3: Attribute to Class correlation table
+================================================================================================================
+0             numClass
+0                     
+sepal length  0.782561
+sepal width  -0.426658
+petal length  0.949035
+petal width   0.956547
+----------------------------------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------------------------------
+Table 4: Descriptive statistics groupped by Class for sepal length
 ================================================================================================================
 0               sepal length                                             Mean - 3std Mean + 3std Statistics    pValue
                        count   mean       std  min    25%  50%  75%  max                                             
@@ -38,7 +50,7 @@ Iris-virginica          50.0  6.588  0.635880  4.9  6.225  6.5  6.9  7.9    4.68
 
 
 ----------------------------------------------------------------------------------------------------------------
-Table 4: Descriptive statistics groupped by Class for sepal width
+Table 5: Descriptive statistics groupped by Class for sepal width
 ================================================================================================================
 0               sepal width                                               Mean - 3std Mean + 3std Statistics    pValue
                       count   mean       std  min    25%  50%    75%  max                                             
@@ -50,7 +62,7 @@ Iris-virginica         50.0  2.974  0.322497  2.2  2.800  3.0  3.175  3.8    2.0
 
 
 ----------------------------------------------------------------------------------------------------------------
-Table 5: Descriptive statistics groupped by Class for petal length
+Table 6: Descriptive statistics groupped by Class for petal length
 ================================================================================================================
 0               petal length                                              Mean - 3std Mean + 3std Statistics    pValue
                        count   mean       std  min  25%   50%    75%  max                                             
@@ -62,7 +74,7 @@ Iris-virginica          50.0  5.552  0.551895  4.5  5.1  5.55  5.875  6.9    3.8
 
 
 ----------------------------------------------------------------------------------------------------------------
-Table 6: Descriptive statistics groupped by Class for petal width
+Table 7: Descriptive statistics groupped by Class for petal width
 ================================================================================================================
 0               petal width                                           Mean - 3std Mean + 3std Statistics    pValue
                       count   mean       std  min  25%  50%  75%  max                                             
@@ -74,7 +86,7 @@ Iris-virginica         50.0  2.026  0.274650  1.4  1.8  2.0  2.3  2.5    1.20205
 
 
 ----------------------------------------------------------------------------------------------------------------
-Table 7: Attributes correlation matrix for the class Iris-setosa
+Table 8: Attributes correlation matrix for the class Iris-setosa
 ================================================================================================================
 0             sepal length  sepal width  petal length  petal width
 0                                                                 
@@ -86,7 +98,7 @@ petal width       0.278098     0.232752      0.331630     1.000000
 
 
 ----------------------------------------------------------------------------------------------------------------
-Table 8: Attributes correlation matrix for the class Iris-versicolor
+Table 9: Attributes correlation matrix for the class Iris-versicolor
 ================================================================================================================
 0             sepal length  sepal width  petal length  petal width
 0                                                                 
@@ -98,7 +110,7 @@ petal width       0.546461     0.663999      0.786668     1.000000
 
 
 ----------------------------------------------------------------------------------------------------------------
-Table 9: Attributes correlation matrix for the class Iris-virginica
+Table 10: Attributes correlation matrix for the class Iris-virginica
 ================================================================================================================
 0             sepal length  sepal width  petal length  petal width
 0                                                                 
@@ -110,7 +122,7 @@ petal width       0.281108     0.537728      0.322108     1.000000
 
 
 ----------------------------------------------------------------------------------------------------------------
-Table 10: Mean values and standard deviation of the compound measurement per species as per Table IX from Fisher paper
+Table 11: Mean values and standard deviation of the compound measurement per species as per Table IX from Fisher paper
 ================================================================================================================
 0                     Mean   Std Dev
 class                               

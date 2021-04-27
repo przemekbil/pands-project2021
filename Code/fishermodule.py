@@ -24,7 +24,7 @@ def fisheranalysys(df, outpath, outfilename, counter):
     col_list.remove('class')
     fm['sum']= fm[col_list].sum(axis=1)
 
-    # Create data frame with only class and compound measurement values
+    # Create data frame with only class and compound measurement values (the 'sum' column)
     # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.drop.html
     compund = fm.drop(['sepal length','sepal width','petal length','petal width'], axis=1)
 

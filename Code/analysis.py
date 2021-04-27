@@ -2,6 +2,7 @@
 # Author: Przemyslaw Bil
 
 import pandas as pd
+import numpy as np
 import math
 import os
 import sys
@@ -155,9 +156,28 @@ plt.close()
 
 verbose.close()
 
-# Open Summary.txt in write mode to clear any previous info while adding the header
-#with open(os.path.join(outfolder, "Summary.txt") , "a") as outfile:
-    #outfile.write("Descriptive statistics for each variable in the Iris dataset\n\n")
+# Add numeric class column, where  Setosa is 1, Versicolour is 2 and Virginica is 3 
+# as per: https://www.dataquest.io/blog/tutorial-add-column-pandas-dataframe-based-on-if-else-condition/
+#
+# This will be needed to calculate a class-attribute correlation as per: https://stats.stackexchange.com/questions/57776/what-is-class-correlation
+
+verbose.out("Attribute to Class correlation: ")
+
+# create a list of conditions
+conditions = [iris['class']=='Iris-setosa', iris['class']=='Iris-versicolor', iris['class']=='Iris-virginica']
+
+# create a list of values
+values = [1,2,3]
+
+# create a new column and use np.select assign values
+iris['numClass'] = np.select(conditions, values)
+
+# append correlation table to "Summary.txt"
+with open(os.path.join(outfolder, "Summary.txt") , "a") as outfile:
+    printtable("Table {}: Attribute to Class correlation table".format(counter.getTab()), iris.corr().drop(['sepal length','sepal width','petal length','petal width'], axis=1).drop(['numClass']), outfile)
+
+iris = iris.drop(['numClass'], axis=1)
+verbose.close()
 
 
 # iterate through the columns of the iris dataset
