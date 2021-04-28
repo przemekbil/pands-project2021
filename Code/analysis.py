@@ -159,9 +159,10 @@ verbose.close()
 # Add numeric class column, where  Setosa is 1, Versicolour is 2 and Virginica is 3 
 # as per: https://www.dataquest.io/blog/tutorial-add-column-pandas-dataframe-based-on-if-else-condition/
 #
-# This will be needed to calculate a class-attribute correlation as per: https://stats.stackexchange.com/questions/57776/what-is-class-correlation
+# This will be needed to calculate a class-attribute correlation 
+# as per: https://stats.stackexchange.com/questions/57776/what-is-class-correlation
 
-verbose.out("Attribute to Class correlation: ")
+verbose.out("Varaiables to Class correlation:")
 
 # create a list of conditions
 conditions = [iris['class']=='Iris-setosa', iris['class']=='Iris-versicolor', iris['class']=='Iris-virginica']
@@ -174,7 +175,7 @@ iris['numClass'] = np.select(conditions, values)
 
 # append correlation table to "Summary.txt"
 with open(os.path.join(outfolder, "Summary.txt") , "a") as outfile:
-    printtable("Table {}: Attribute to Class correlation table".format(counter.getTab()), iris.corr().drop(['sepal length','sepal width','petal length','petal width'], axis=1).drop(['numClass']), outfile)
+    printtable("Table {}: Variable to Class correlation table".format(counter.getTab()), iris.corr().drop(['sepal length','sepal width','petal length','petal width'], axis=1).drop(['numClass']), outfile)
 
 iris = iris.drop(['numClass'], axis=1)
 verbose.close()

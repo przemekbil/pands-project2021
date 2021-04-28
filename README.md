@@ -54,3 +54,7 @@ https://www.youtube.com/watch?v=FLuqwQgSBDw
 https://archive.ics.uci.edu/ml/datasets/iris
 
 https://onlinelibrary.wiley.com/doi/epdf/10.1111/j.1469-1809.1936.tb02137.x
+
+https://www.dataquest.io
+
+https://stats.stackexchange.com
