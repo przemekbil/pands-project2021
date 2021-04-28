@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import seaborn as sbr
 from fishermodule import *
 from dofmodule import *
-from scipy.stats import normaltest
+import scipy.stats as scipy
 
 # this function will read data from the data files and will return pandas data frame df
 def getdata(datapath):
@@ -35,7 +35,7 @@ def getdata(datapath):
 # This function accepts a subset of the data with 2 columns: class description and one variable
 # The output is a text file with descriptive stats and the histogram
 # File name for the histogram and the text file are taken from the second column name
-def outsummary(subset, outpath):
+def attribute_summary(subset, outpath):
 
     # get a name of the atribute from the name of the second column
     atribute = subset.columns[1]
@@ -57,11 +57,18 @@ def outsummary(subset, outpath):
         class_subset = subset[subset['class'] == classtype]
         
         # Calculate normality test for each class separately
-        stat, p = normaltest(class_subset[atribute])
+        stat, p = scipy.normaltest(class_subset[atribute])
         # access single cell in the data frame: https://kanoki.org/2019/04/12/pandas-how-to-get-a-cell-value-and-update-it/
         stats.at[classtype,'Statistics'] = stat
         stats.at[classtype,'pValue'] = p
 
+    # ANOVA as per https://www.pythonfordatascience.org/anova-python/#anova-test
+    stat, p = scipy.f_oneway(subset[atribute][subset['class'] == 'Iris-setosa'],
+               subset[atribute][subset['class'] == 'Iris-versicolor'],
+               subset[atribute][subset['class'] == 'Iris-virginica'])
+    
+    stats['ANOVA Stat'] = stat
+    stats['ANOVA p'] = p
 
     # Append calculated descriptive stats to a Summary.txt file
     with open("Summary.txt", "at") as outfile:
@@ -108,6 +115,7 @@ def outsummary(subset, outpath):
     plt.close()
     
     verbose.close()
+    # end of attribute_summary function
 
 # this function will check if this script was called with -v or -V argument, then it will return true. False for all the rest arg values or no arguments
 def isverbose():
@@ -184,10 +192,10 @@ verbose.close()
 # iterate through the columns of the iris dataset
 # to create histograms, boxplots and descriptive statistics summary for each variable 
 for column in iris.columns:
-    # if the name of the column is not class, call the outsummary function and pass the subset of the data with only 2 column: class and 1 attribute
+    # if the name of the column is not class, call the attribute_summary function and pass the subset of the data with only 2 column: class and 1 attribute
     if column!='class':
         # get a subset as per https://pandas.pydata.org/docs/getting_started/intro_tutorials/03_subset_data.html
-        outsummary(iris[['class', column]], outfolder)
+        attribute_summary(iris[['class', column]], outfolder)
 
 
 # create a new table with classes
