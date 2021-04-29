@@ -55,7 +55,7 @@ def attribute_summary(subset, outpath):
     with open("Summary.txt", "at") as outfile:
         printtable("Table {}: Descriptive statistics groupped by Class for {}".format(counter.getTab(), atribute), stats, outfile)
 
-    # Sample Normality and ANOVA test
+    # Normality test for the sample data
     normal = subset.groupby('class').count()
 
     # Rename atrribute column to Count
@@ -80,16 +80,18 @@ def attribute_summary(subset, outpath):
     with open("Summary.txt", "at") as outfile:
         printtable("Table {}: Normality tests for {} sample".format(counter.getTab(), atribute), normal, outfile)
 
+
     # ANOVA as per https://www.pythonfordatascience.org/anova-python/#anova-test
     stat, p = scipy.f_oneway(subset[atribute][subset['class'] == 'Iris-setosa'],
                subset[atribute][subset['class'] == 'Iris-versicolor'],
                subset[atribute][subset['class'] == 'Iris-virginica'])
 
+    anova = {'F-Statistics':[stat], 'pValue':[p]}
 
-
-
-
-
+    # Append normality test to a Summary.txt file
+    with open("Summary.txt", "at") as outfile:
+        # printtable function uses to_string pandas method, so I have to create and pandas dataframe:
+        printtable("Table {}: Anova test for {} sample".format(counter.getTab(), atribute), pd.DataFrame(data=anova), outfile)
 
     verbose.close()
 

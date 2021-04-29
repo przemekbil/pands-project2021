@@ -58,3 +58,7 @@ https://onlinelibrary.wiley.com/doi/epdf/10.1111/j.1469-1809.1936.tb02137.x
 https://www.dataquest.io
 
 https://stats.stackexchange.com
+
+https://www.scribbr.com/
+
+https://www.pythonfordatascience.org
