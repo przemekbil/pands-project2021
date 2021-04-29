@@ -51,6 +51,16 @@ def attribute_summary(subset, outpath):
     stats['Mean - 3std'] = subset.groupby('class').mean() - subset.groupby('class').std() * 3
     stats['Mean + 3std'] = subset.groupby('class').mean() + subset.groupby('class').std() * 3
 
+    # Append calculated descriptive stats to a Summary.txt file
+    with open("Summary.txt", "at") as outfile:
+        printtable("Table {}: Descriptive statistics groupped by Class for {}".format(counter.getTab(), atribute), stats, outfile)
+
+    # Sample Normality and ANOVA test
+    normal = subset.groupby('class').count()
+
+    # Rename atrribute column to Count
+    normal = normal.rename(columns={atribute: "Count"})
+
     # normality test as per:https://machinelearningmastery.com/a-gentle-introduction-to-normality-tests-in-python/
     # and https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.normaltest.html
     for classtype in subset['class'].unique():
@@ -59,20 +69,27 @@ def attribute_summary(subset, outpath):
         # Calculate normality test for each class separately
         stat, p = scipy.normaltest(class_subset[atribute])
         # access single cell in the data frame: https://kanoki.org/2019/04/12/pandas-how-to-get-a-cell-value-and-update-it/
-        stats.at[classtype,'Statistics'] = stat
-        stats.at[classtype,'pValue'] = p
+        normal.at[classtype,'Statistics'] = stat
+        normal.at[classtype,'pValue'] = p
+        if p>0.05:
+            normal.at[classtype, 'Result'] = "Pass"
+        else:
+            normal.at[classtype, 'Result'] = "Fail"
+
+    # Append normality test to a Summary.txt file
+    with open("Summary.txt", "at") as outfile:
+        printtable("Table {}: Normality tests for {} sample".format(counter.getTab(), atribute), normal, outfile)
 
     # ANOVA as per https://www.pythonfordatascience.org/anova-python/#anova-test
     stat, p = scipy.f_oneway(subset[atribute][subset['class'] == 'Iris-setosa'],
                subset[atribute][subset['class'] == 'Iris-versicolor'],
                subset[atribute][subset['class'] == 'Iris-virginica'])
-    
-    stats['ANOVA Stat'] = stat
-    stats['ANOVA p'] = p
 
-    # Append calculated descriptive stats to a Summary.txt file
-    with open("Summary.txt", "at") as outfile:
-        printtable("Table {}: Descriptive statistics groupped by Class for {}".format(counter.getTab(), atribute), stats, outfile)
+
+
+
+
+
 
     verbose.close()
 
