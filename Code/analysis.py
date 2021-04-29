@@ -81,6 +81,7 @@ def attribute_summary(subset, outpath):
         printtable("Table {}: Normality tests for {} sample".format(counter.getTab(), atribute), normal, outfile)
 
 
+    # ANOVA test https://www.scribbr.com/statistics/one-way-anova/
     # ANOVA as per https://www.pythonfordatascience.org/anova-python/#anova-test
     stat, p = scipy.f_oneway(subset[atribute][subset['class'] == 'Iris-setosa'],
                subset[atribute][subset['class'] == 'Iris-versicolor'],
@@ -90,7 +91,7 @@ def attribute_summary(subset, outpath):
 
     # Append normality test to a Summary.txt file
     with open("Summary.txt", "at") as outfile:
-        # printtable function uses to_string pandas method, so I have to create and pandas dataframe:
+        # printtable function uses to_string pandas method, so I have to create and pass a pandas dataframe:
         printtable("Table {}: Anova test for {} sample".format(counter.getTab(), atribute), pd.DataFrame(data=anova), outfile)
 
     verbose.close()
