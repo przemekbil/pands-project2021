@@ -40,7 +40,6 @@ def attribute_summary(subset, outpath):
     # get a name of the atribute from the name of the second column
     atribute = subset.columns[1]
 
-
     verbose.out("Output summary data for "+atribute+":")
 
     # calculate the mean of this attribute for every class
@@ -54,6 +53,9 @@ def attribute_summary(subset, outpath):
     # Append calculated descriptive stats to a Summary.txt file
     with open("Summary.txt", "at") as outfile:
         printtable("Table {}: Descriptive statistics groupped by Class for {}".format(counter.getTab(), atribute), stats, outfile)
+        # Print measurement frequency for each class
+        # As per https://towardsdatascience.com/pandas-tips-and-tricks-33bcc8a40bb9
+        printtable("Table {}: Measurment frequency for {}".format(counter.getTab(), atribute), subset.groupby('class')[atribute].value_counts(), outfile)
 
     # Normality test for the sample data
     normal = subset.groupby('class').count()

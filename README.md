@@ -62,3 +62,5 @@ https://stats.stackexchange.com
 https://www.scribbr.com/
 
 https://www.pythonfordatascience.org
+
+https://towardsdatascience.com
