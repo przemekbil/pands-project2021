@@ -79,7 +79,7 @@ def fisheranalysys(df, outpath, outfilename, counter):
         else:
             compund.at[index,'classification']='Iris-virginica'
         
-        
+        # check classification against the actual class, assign 1 to error if different
         if row['class'] == compund.at[index,'classification']:
             compund.at[index,'error'] = 0
         else:
