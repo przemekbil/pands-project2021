@@ -50,13 +50,6 @@ def attribute_summary(subset, outpath):
     stats['Mean - 3std'] = subset.groupby('class').mean() - subset.groupby('class').std() * 3
     stats['Mean + 3std'] = subset.groupby('class').mean() + subset.groupby('class').std() * 3
 
-    # Append calculated descriptive stats to a Summary.txt file
-    with open("Summary.txt", "at") as outfile:
-        printtable("Table {}: Descriptive statistics groupped by Class for {}".format(counter.getTab(), atribute), stats, outfile)
-        # Print measurement frequency for each class
-        # As per https://towardsdatascience.com/pandas-tips-and-tricks-33bcc8a40bb9
-        printtable("Table {}: Measurment frequency for {}".format(counter.getTab(), atribute), subset.groupby('class')[atribute].value_counts(), outfile)
-
     # Normality test for the sample data
     normal = subset.groupby('class').count()
 
@@ -77,9 +70,20 @@ def attribute_summary(subset, outpath):
             normal.at[classtype, 'Result'] = "Pass"
         else:
             normal.at[classtype, 'Result'] = "Fail"
+        
+        # Normal distribution defined and use of cdf (cumulative distribution function) as per https://docs.scipy.org/doc/scipy/reference/tutorial/stats.html
+        # loc=mean, scale=standard deviation
+        gauss=scipy.norm(loc=class_subset.mean(), scale=class_subset.std())
+
+        stats.at[classtype, 'cdf(min)'] = gauss.cdf( class_subset[atribute].min() )
+        stats.at[classtype, 'cdf(max)'] = gauss.cdf( class_subset[atribute].max() )
 
     # Append normality test to a Summary.txt file
     with open("Summary.txt", "at") as outfile:
+        printtable("Table {}: Descriptive statistics groupped by Class for {}".format(counter.getTab(), atribute), stats, outfile)
+        # Print measurement frequency for each class
+        # As per https://towardsdatascience.com/pandas-tips-and-tricks-33bcc8a40bb9
+        printtable("Table {}: Measurement frequency for {}".format(counter.getTab(), atribute), subset.groupby('class')[atribute].value_counts(), outfile)        
         printtable("Table {}: Normality tests for {} sample".format(counter.getTab(), atribute), normal, outfile)
 
 
