@@ -196,7 +196,7 @@ verbose.close()
 # This will be needed to calculate a class-attribute correlation 
 # as per: https://stats.stackexchange.com/questions/57776/what-is-class-correlation
 
-verbose.out("Varaiables to Class correlation:")
+verbose.out("Variables to Class correlation:")
 
 # create a list of conditions
 conditions = [iris['class']=='Iris-setosa', iris['class']=='Iris-versicolor', iris['class']=='Iris-virginica']
@@ -251,7 +251,7 @@ verbose.out("Output scatter plot:")
 # Exploratory data analysis as per https://www.youtube.com/watch?v=FLuqwQgSBDw 
 sbr.set_style("whitegrid")
 scatt = sbr.pairplot(iris, hue="class", height=3).add_legend()
-plt.savefig(counter.getFig('scatter plot.png'), dpi=150)
+plt.savefig(counter.getFig('pairplot.png'), dpi=150)
 plt.close()
 
 verbose.close()
